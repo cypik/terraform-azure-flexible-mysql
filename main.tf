@@ -1,12 +1,12 @@
-data "azurerm_client_config" "current" {}
+#data "azurerm_client_config" "current" {}
 
 locals {
   resource_group_name = var.resource_group_name
-  location            = var.location
+  #location            = var.location
 }
 
 module "labels" {
-  source      = "git::git@github.com:opz0/terraform-azure-labels.git?ref=master"
+  source      = "git::https://github.com/opz0/terraform-azure-labels.git?ref=v1.0.0"
   name        = var.name
   environment = var.environment
   managedby   = var.managedby
@@ -34,7 +34,7 @@ resource "azurerm_mysql_flexible_server" "main" {
   administrator_password            = var.admin_password == null ? random_password.main[0].result : var.admin_password
   backup_retention_days             = var.backup_retention_days
   delegated_subnet_id               = var.delegated_subnet_id
-  private_dns_zone_id               = var.private_dns ? join("", azurerm_private_dns_zone.main.*.id) : var.existing_private_dns_zone_id
+  private_dns_zone_id               = var.private_dns ? join("", azurerm_private_dns_zone.main[*].id) : var.existing_private_dns_zone_id
   sku_name                          = var.sku_name
   create_mode                       = var.create_mode
   geo_redundant_backup_enabled      = var.geo_redundant_backup_enabled
@@ -67,7 +67,7 @@ resource "azurerm_mysql_flexible_database" "main" {
   count               = var.enabled ? 1 : 0
   name                = var.db_name
   resource_group_name = local.resource_group_name
-  server_name         = join("", azurerm_mysql_flexible_server.main.*.name)
+  server_name         = join("", azurerm_mysql_flexible_server.main[*].name)
   charset             = var.charset
   collation           = var.collation
   depends_on          = [azurerm_mysql_flexible_server.main]
@@ -78,14 +78,14 @@ resource "azurerm_mysql_flexible_server_configuration" "main" {
   count               = var.enabled ? length(var.server_configuration_names) : 0
   name                = element(var.server_configuration_names, count.index)
   resource_group_name = local.resource_group_name
-  server_name         = join("", azurerm_mysql_flexible_server.main.*.name)
+  server_name         = join("", azurerm_mysql_flexible_server.main[*].name)
   value               = element(var.values, count.index)
 }
 
 
 resource "azurerm_mysql_server_key" "main" {
   count            = var.enabled && var.key_vault_key_id != null ? 1 : 0
-  server_id        = join("", azurerm_mysql_flexible_server.main.*.id)
+  server_id        = join("", azurerm_mysql_flexible_server.main[*].id)
   key_vault_key_id = var.key_vault_key_id
 }
 
@@ -101,7 +101,7 @@ resource "azurerm_private_dns_zone" "main" {
 resource "azurerm_private_dns_zone_virtual_network_link" "main" {
   count                 = var.enabled && var.private_dns ? 1 : 0
   name                  = format("mysql-endpoint-link-%s", module.labels.id)
-  private_dns_zone_name = join("", azurerm_private_dns_zone.main.*.name)
+  private_dns_zone_name = join("", azurerm_private_dns_zone.main[*].name)
   virtual_network_id    = var.virtual_network_id
   resource_group_name   = local.resource_group_name
   registration_enabled  = var.registration_enabled

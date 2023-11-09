@@ -28,6 +28,7 @@ variable "managedby" {
   description = "ManagedBy, eg ''."
 }
 variable "resource_group_name" {
+  type        = any
   description = "A container that holds related resources for an Azure solution"
   default     = ""
 }
@@ -47,11 +48,6 @@ variable "existing_private_dns_zone" {
   default     = false
 }
 
-variable "enable_private_endpoint" {
-  description = "Manages a Private Endpoint to Azure database for MySQL"
-  default     = false
-}
-
 variable "registration_enabled" {
   type        = bool
   description = "Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled"
@@ -60,14 +56,11 @@ variable "registration_enabled" {
 ###########azurerm_mysql_flexible_server######
 
 variable "admin_username" {
+  type        = any
   description = "The administrator login name for the new SQL Server"
   default     = null
 }
 
-variable "mysql_server_name" {
-  type    = string
-  default = ""
-}
 variable "admin_password" {
   type        = string
   description = "The password associated with the admin_username user"
@@ -140,16 +133,6 @@ variable "source_server_id" {
   description = "The resource ID of the source MySQL Flexible Server to be restored. Required when create_mode is PointInTimeRestore, GeoRestore, and Replica. Changing this forces a new MySQL Flexible Server to be created."
 }
 
-variable "start_ip_address" {
-  type    = string
-  default = ""
-}
-
-variable "end_ip_address" {
-  type    = string
-  default = ""
-}
-
 variable "virtual_network_id" {
   type        = string
   description = "The name of the virtual network"
@@ -161,13 +144,6 @@ variable "key_vault_key_id" {
   description = "The URL to a Key Vault Key"
   default     = null
 }
-
-variable "key_vault_id" {
-  type        = string
-  default     = ""
-  description = "Specifies the URL to a Key Vault Key (either from a Key Vault Key, or the Key URL for the Key Vault Secret"
-}
-
 
 variable "private_dns" {
   type    = bool

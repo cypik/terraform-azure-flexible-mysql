@@ -5,11 +5,11 @@ provider "azurerm" {
 locals {
   name        = "appnewh"
   environment = "test"
-  label_order = ["name", "environment"]
+  #label_order = ["name", "environment"]
 }
 
 module "resource_group" {
-  source      = "git::git@github.com:opz0/terraform-azure-resource-group.git?ref=master"
+  source      = "git::https://github.com/opz0/terraform-azure-resource-group.git?ref=v1.0.0"
   name        = "app"
   environment = "flexible"
   location    = "North Europe"
@@ -17,7 +17,7 @@ module "resource_group" {
 
 
 module "vnet" {
-  source              = "git::git@github.com:opz0/terraform-azure-vnet.git?ref=master"
+  source              = "git::https://github.com/opz0/terraform-azure-vnet.git?ref=v1.0.0"
   name                = "app"
   environment         = "testnew"
   resource_group_name = module.resource_group.resource_group_name
@@ -26,13 +26,13 @@ module "vnet" {
 }
 
 module "subnet" {
-  source = "git::git@github.com:opz0/terraform-azure-subnet.git?ref=master"
+  source = "git::https://github.com/opz0/terraform-azure-subnet.git?ref=v1.0.0"
 
   name                 = "app"
   environment          = "test"
   resource_group_name  = module.resource_group.resource_group_name
   location             = module.resource_group.resource_group_location
-  virtual_network_name = module.vnet.vnet_name[0]
+  virtual_network_name = module.vnet.name
 
   #subnet
   subnet_names      = ["subnet1"]
@@ -71,18 +71,18 @@ data "azurerm_private_dns_zone" "main" {
 }
 
 
-module "flexible-mysql" {
-  depends_on                     = [module.resource_group, module.vnet, data.azurerm_resource_group.main]
-  source                         = "../../."
-  name                           = local.name
-  environment                    = local.environment
-  main_rg_name                   = data.azurerm_resource_group.main.name
-  resource_group_name            = module.resource_group.resource_group_name
-  location                       = module.resource_group.resource_group_location
-  virtual_network_id             = module.vnet.vnet_id[0]
-  delegated_subnet_id            = [module.subnet.default_subnet_id][0]
-  mysql_version                  = "8.0.21"
-  mysql_server_name              = "testmysqlserver"
+module "flexible-mysql-replication" {
+  depends_on          = [module.resource_group, module.vnet, data.azurerm_resource_group.main]
+  source              = "../../."
+  name                = local.name
+  environment         = local.environment
+  main_rg_name        = data.azurerm_resource_group.main.name
+  resource_group_name = module.resource_group.resource_group_name
+  location            = module.resource_group.resource_group_location
+  virtual_network_id  = module.vnet.id
+  delegated_subnet_id = [module.subnet.default_subnet_id][0]
+  mysql_version       = "8.0.21"
+  #mysql_server_name              = "testmysqlserver"
   zone                           = "1"
   admin_username                 = "mysqlusern"
   admin_password                 = "ba5yatgfgfhdsvvc6A3ns2lu4gqzzc"
@@ -96,7 +96,6 @@ module "flexible-mysql" {
   existing_private_dns_zone      = true
   existing_private_dns_zone_id   = data.azurerm_private_dns_zone.main.id
   existing_private_dns_zone_name = data.azurerm_private_dns_zone.main.name
-
   ##azurerm_mysql_flexible_server_configuration
   server_configuration_names = ["interactive_timeout", "audit_log_enabled"]
   values                     = ["600", "ON"]
