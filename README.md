@@ -1,4 +1,4 @@
-# terraform-azure-vnet
+# terraform-azure-flexible-mysql
 # Terraform Azure Infrastructure
 
 This Terraform configuration defines an Azure infrastructure using the Azure provider.
@@ -13,7 +13,7 @@ This Terraform configuration defines an Azure infrastructure using the Azure pro
 - [License](#license)
 
 ## Introduction
-This repository contains Terraform code to deploy resources on Microsoft Azure, including a resource group and a virtual network.
+This repository contains Terraform code to deploy resources on Microsoft Azure, including a resource group and a virtual network and flexible-mysql.
 
 ## Usage
 To use this module, you should have Terraform installed and configured for AZURE. This module provides the necessary Terraform configuration
@@ -21,7 +21,7 @@ for creating AZURE resources, and you can customize the inputs as needed. Below 
 
 # Examples
 
-# Example: complete
+# Example: flexible-mysql
 
 ```hcl
 module "flexible-mysql" {
@@ -53,7 +53,7 @@ module "flexible-mysql" {
 # Example: mysql-flexible-replication
 
 ```hcl
-module "flexible-mysql" {
+module "flexible-mysql-replication" {
   depends_on                     = [module.resource_group, module.vnet, data.azurerm_resource_group.main]
   source                         = "git::https://github.com/opz0/terraform-azure-flexible-mysql.git?ref=v1.0.0"
   name                           = local.name
@@ -97,7 +97,7 @@ The following input variables can be configured:
 ## Module Outputs
 This module provides the following outputs:
 
-- 'flmysql_server_idexible': The ID of the MySQL Flexible Server.
+- 'flexible-mysql_server_id': The ID of the MySQL Flexible Server.
 - 'public_network_access_enabled': Is the public network access enabled.
 
 # Examples

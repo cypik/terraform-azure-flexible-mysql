@@ -71,7 +71,7 @@ data "azurerm_private_dns_zone" "main" {
 }
 
 
-module "flexible-mysql" {
+module "flexible-mysql-replication" {
   depends_on          = [module.resource_group, module.vnet, data.azurerm_resource_group.main]
   source              = "../../."
   name                = local.name
