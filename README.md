@@ -50,7 +50,7 @@ module "flexible-mysql" {
   values                     = ["600", "ON"]
 }
 ```
-# Example: mysql-flexible-replication
+# Example: flexible-mysql-replication
 
 ```hcl
 module "flexible-mysql-replication" {
