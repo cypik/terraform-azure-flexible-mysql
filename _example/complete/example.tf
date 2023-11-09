@@ -3,14 +3,14 @@ provider "azurerm" {
 }
 
 locals {
-  name        = "app"
+  name        = "app11"
   environment = "test"
-  label_order = ["name", "environment"]
+  # label_order = ["name", "environment"]
 }
 
 
 module "resource_group" {
-  source      = "git::git@github.com:opz0/terraform-azure-resource-group.git?ref=master"
+  source      = "git::https://github.com/opz0/terraform-azure-resource-group.git?ref=v1.0.0"
   name        = "app"
   environment = "tested"
   location    = "North Europe"
@@ -18,7 +18,7 @@ module "resource_group" {
 
 
 module "vnet" {
-  source              = "git::git@github.com:opz0/terraform-azure-vnet.git?ref=master"
+  source              = "git::https://github.com/opz0/terraform-azure-vnet.git?ref=v1.0.0"
   name                = "app"
   environment         = "test"
   resource_group_name = module.resource_group.resource_group_name
@@ -28,13 +28,13 @@ module "vnet" {
 
 
 module "subnet" {
-  source = "git::git@github.com:opz0/terraform-azure-subnet.git?ref=master"
+  source = "git::https://github.com/opz0/terraform-azure-subnet.git?ref=v1.0.0"
 
   name                 = "app"
   environment          = "test"
   resource_group_name  = module.resource_group.resource_group_name
   location             = module.resource_group.resource_group_location
-  virtual_network_name = module.vnet.vnet_name[0]
+  virtual_network_name = module.vnet.name
 
   #subnet
   subnet_names    = ["subnet1"]
@@ -69,10 +69,9 @@ module "flexible-mysql" {
   environment         = local.environment
   resource_group_name = module.resource_group.resource_group_name
   location            = module.resource_group.resource_group_location
-  virtual_network_id  = module.vnet.vnet_id[0]
+  virtual_network_id  = module.vnet.id
   delegated_subnet_id = [module.subnet.default_subnet_id][0]
   mysql_version       = "8.0.21"
-  mysql_server_name   = "testmysqlserver"
   private_dns         = true
   zone                = "1"
   admin_username      = "mysqlusername"
@@ -84,7 +83,7 @@ module "flexible-mysql" {
   auto_grow_enabled   = true
   iops                = 360
   size_gb             = "20"
-  ##azurerm_mysql_flexible_server_configuration
+  #azurerm_mysql_flexible_server_configuration
   server_configuration_names = ["interactive_timeout", "audit_log_enabled"]
   values                     = ["600", "ON"]
 }

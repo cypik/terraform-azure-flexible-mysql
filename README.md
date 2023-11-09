@@ -1,0 +1,111 @@
+# terraform-azure-vnet
+# Terraform Azure Infrastructure
+
+This Terraform configuration defines an Azure infrastructure using the Azure provider.
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Usage](#usage)
+- [Module Inputs](#module-inputs)
+- [Module Outputs](#module-outputs)
+- [Examples](#examples)
+- [License](#license)
+
+## Introduction
+This repository contains Terraform code to deploy resources on Microsoft Azure, including a resource group and a virtual network.
+
+## Usage
+To use this module, you should have Terraform installed and configured for AZURE. This module provides the necessary Terraform configuration
+for creating AZURE resources, and you can customize the inputs as needed. Below is an example of how to use this module:
+
+# Examples
+
+# Example: complete
+
+```hcl
+module "flexible-mysql" {
+  depends_on          = [module.resource_group, module.vnet]
+  source              = "git::https://github.com/opz0/terraform-azure-flexible-mysql.git?ref=v1.0.0"
+  name                = local.name
+  environment         = local.environment
+  resource_group_name = module.resource_group.resource_group_name
+  location            = module.resource_group.resource_group_location
+  virtual_network_id  = module.vnet.id
+  delegated_subnet_id = [module.subnet.default_subnet_id][0]
+  mysql_version       = "8.0.21"
+  private_dns         = true
+  zone                = "1"
+  admin_username      = "mysqlusername"
+  admin_password      = "ba5yatgfgfhdsv6A3ns2lu4gqzzc"
+  sku_name            = "GP_Standard_D8ds_v4"
+  db_name             = "maindb"
+  charset             = "utf8mb3"
+  collation           = "utf8mb3_unicode_ci"
+  auto_grow_enabled   = true
+  iops                = 360
+  size_gb             = "20"
+  #azurerm_mysql_flexible_server_configuration
+  server_configuration_names = ["interactive_timeout", "audit_log_enabled"]
+  values                     = ["600", "ON"]
+}
+```
+# Example: mysql-flexible-replication
+
+```hcl
+module "flexible-mysql" {
+  depends_on                     = [module.resource_group, module.vnet, data.azurerm_resource_group.main]
+  source                         = "git::https://github.com/opz0/terraform-azure-flexible-mysql.git?ref=v1.0.0"
+  name                           = local.name
+  environment                    = local.environment
+  main_rg_name                   = data.azurerm_resource_group.main.name
+  resource_group_name            = module.resource_group.resource_group_name
+  location                       = module.resource_group.resource_group_location
+  virtual_network_id             = module.vnet.id
+  delegated_subnet_id            = [module.subnet.default_subnet_id][0]
+  mysql_version                  = "8.0.21"
+  zone                           = "1"
+  admin_username                 = "mysqlusern"
+  admin_password                 = "ba5yatgfgfhdsvvc6A3ns2lu4gqzzc"
+  sku_name                       = "GP_Standard_D8ds_v4"
+  db_name                        = "maindb"
+  charset                        = "utf8"
+  collation                      = "utf8_unicode_ci"
+  auto_grow_enabled              = true
+  iops                           = 360
+  size_gb                        = "20"
+  existing_private_dns_zone      = true
+  existing_private_dns_zone_id   = data.azurerm_private_dns_zone.main.id
+  existing_private_dns_zone_name = data.azurerm_private_dns_zone.main.name
+  ##azurerm_mysql_flexible_server_configuration
+  server_configuration_names = ["interactive_timeout", "audit_log_enabled"]
+  values                     = ["600", "ON"]
+}
+```
+This example demonstrates how to create various AZURE resources using the provided modules. Adjust the input values to suit your specific requirements.
+
+## Module Inputs
+The following input variables can be configured:
+
+- 'name': The name which should be used for this MySQL Flexible Server.
+- 'resource_group_name': The name of the Resource Group where the MySQL Flexible Server should exist.
+- 'admin_username': The Administrator login for the MySQL Flexible Server.
+- 'admin_password ': The Password associated with the administrator_login for the MySQL Flexible Server.
+- 'db_name': Specifies the name of the MySQL Database,
+- 'mysql_version': The version of the MySQL Flexible Server to use.
+
+## Module Outputs
+This module provides the following outputs:
+
+- 'flmysql_server_idexible': The ID of the MySQL Flexible Server.
+- 'public_network_access_enabled': Is the public network access enabled.
+
+# Examples
+For detailed examples on how to use this module, please refer to the 'examples' directory within this repository.
+
+# License
+This Terraform module is provided under the '[License Name]' License. Please see the [LICENSE](https://github.com/opz0/terraform-azure-flexible-mysql/blob/readme/LICENSE) file for more details.
+
+# Author
+Your Name
+Replace '[License Name]' and '[Your Name]' with the appropriate license and your information. Feel free to expand this README with additional details or usage instructions as needed for your specific use case.
