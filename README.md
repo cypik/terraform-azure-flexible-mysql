@@ -104,7 +104,7 @@ This module provides the following outputs:
 For detailed examples on how to use this module, please refer to the [Examples](https://github.com/cypik/terraform-azure-flexible-mysql/tree/master/_example) directory within this repository.
 
 # License
-This Terraform module is provided under the '[License Name]' License. Please see the [LICENSE](https://github.com/cypik/terraform-azure-flexible-mysql/blob/readme/LICENSE) file for more details.
+This Terraform module is provided under the '[License Name]' License. Please see the [LICENSE](https://github.com/cypik/terraform-azure-flexible-mysql/blob/master/LICENSE) file for more details.
 
 # Author
 Your Name
