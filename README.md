@@ -26,7 +26,7 @@ for creating AZURE resources, and you can customize the inputs as needed. Below 
 ```hcl
 module "flexible-mysql" {
   depends_on          = [module.resource_group, module.vnet]
-  source              = "git::https://github.com/opz0/terraform-azure-flexible-mysql.git?ref=v1.0.0"
+  source              = "git::https://github.com/cypik/terraform-azure-flexible-mysql.git?ref=v1.0.0"
   name                = local.name
   environment         = local.environment
   resource_group_name = module.resource_group.resource_group_name
@@ -55,7 +55,7 @@ module "flexible-mysql" {
 ```hcl
 module "flexible-mysql-replication" {
   depends_on                     = [module.resource_group, module.vnet, data.azurerm_resource_group.main]
-  source                         = "git::https://github.com/opz0/terraform-azure-flexible-mysql.git?ref=v1.0.0"
+  source                         = "git::https://github.com/cypik/terraform-azure-flexible-mysql.git?ref=v1.0.0"
   name                           = local.name
   environment                    = local.environment
   main_rg_name                   = data.azurerm_resource_group.main.name
@@ -101,10 +101,10 @@ This module provides the following outputs:
 - 'public_network_access_enabled': Is the public network access enabled.
 
 # Examples
-For detailed examples on how to use this module, please refer to the 'examples' directory within this repository.
+For detailed examples on how to use this module, please refer to the [Examples](https://github.com/cypik/terraform-azure-flexible-mysql/tree/master/_example) directory within this repository.
 
 # License
-This Terraform module is provided under the '[License Name]' License. Please see the [LICENSE](https://github.com/opz0/terraform-azure-flexible-mysql/blob/readme/LICENSE) file for more details.
+This Terraform module is provided under the '[License Name]' License. Please see the [LICENSE](https://github.com/cypik/terraform-azure-flexible-mysql/blob/readme/LICENSE) file for more details.
 
 # Author
 Your Name
