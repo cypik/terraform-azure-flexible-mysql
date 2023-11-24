@@ -3,7 +3,7 @@ provider "azurerm" {
 }
 
 locals {
-  name        = "appnewh"
+  name        = "app"
   environment = "test"
   #label_order = ["name", "environment"]
 }
